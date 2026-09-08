@@ -1,0 +1,15 @@
+# Read the documentation before extending the defaults:
+# https://docs.searxng.org/admin/settings/
+
+use_default_settings: true
+
+server:
+# TODO: regenerate secret key!
+  secret_key: "shSs7BSdTiytSs2TYHmfjevmMLWWXQ"
+  image_proxy: true
+
+search:
+  # options available for formats: [html, csv, json, rss]
+  formats:
+    - html
+    - json

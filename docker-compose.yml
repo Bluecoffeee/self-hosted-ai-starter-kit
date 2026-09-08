@@ -3,6 +3,8 @@ volumes:
   postgres_storage:
   ollama_storage:
   qdrant_storage:
+  core-data:
+  valkey-data:
 
 networks:
   demo:
@@ -154,3 +156,24 @@ services:
     image: ollama/ollama:rocm
     depends_on:
      - ollama-gpu-amd
+
+  searxng-core:
+    # container_name: searxng-core
+    image: docker.io/searxng/searxng:${SEARXNG_VERSION:-latest}
+    networks: ['demo']
+    restart: always
+    ports:
+      - ${SEARXNG_HOST:+${SEARXNG_HOST}:}${SEARXNG_PORT:-8080}:${SEARXNG_PORT:-8080}
+    env_file: ./.env
+    volumes:
+      - ./core-config/:/etc/searxng/:Z
+      - core-data:/var/cache/searxng/
+
+  searxng-valkey:
+    # container_name: searxng-valkey
+    image: docker.io/valkey/valkey:9-alpine
+    command: valkey-server --save 30 1 --loglevel warning
+    networks: ['demo']
+    restart: always
+    volumes:
+      - valkey-data:/data/
